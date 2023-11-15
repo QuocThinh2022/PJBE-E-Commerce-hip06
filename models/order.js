@@ -8,10 +8,10 @@ let orderSchema = new mongoose.Schema({
     }],
     status: {
         type: String,
-        default: 'Processing',
-        enum: ['Cancelled', 'Processing', 'Successed']
+        default: 'Proccessing',
+        enum: ['Cancelled', 'Proccessing', 'Succeed']
     },
-    paymemtIntent: {},
+    total: Number,
     orderBy: {
         type: mongoose.Types.ObjectId,
         ref: 'User'

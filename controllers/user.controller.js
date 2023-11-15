@@ -4,6 +4,7 @@ const {generateAccessToken, generateRefreshToken} = require('../middlewares/jwt'
 const jwt = require('jsonwebtoken');
 const sendMail = require('../utils/sendMail');
 const crypto = require('crypto');
+const { pid } = require('process');
 
 const register = asyncHandler(async (req, res) => {
     const {email, password, firstName, lastName} = req.body;
@@ -185,7 +186,21 @@ const updateUserAddress = asyncHandler(async (req, res) => {
 })
 
 const updateCart = asyncHandler(async (req, res) => {
-    
+    const {_id} = req.user;
+    const {pid, quantity, color} = req.body;
+    if (!pid || !quantity || !color) throw new Error('Missing inputs');
+    const user = await User.findById(_id).select('cart');
+    const alreadyProduct = user?.cart.find(item => item.product.toString() === pid);
+    let response;
+    if (alreadyProduct && alreadyProduct.color === color) {
+        response = await User.updateOne({cart: {$elemMatch: alreadyProduct}}, {$set: {'cart.$.quantity': quantity}}, {new: true});
+    } else {
+        response = await User.findByIdAndUpdate(_id, {$push: {cart: {product: pid, quantity, color}}}, {new: true});
+    }
+    return res.status(200).json({
+        success: response ? true:false,
+        updateUser: response ? response : 'Some thing went wrong'
+    })
 })
  
 module.exports = {
@@ -200,5 +215,6 @@ module.exports = {
     deleteUser,
     updateUser,
     updateUserByAdmin,
-    updateUserAddress
+    updateUserAddress,
+    updateCart,
 }
