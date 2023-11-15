@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+
 //Declare the Schema of the Mongo model
 let userSchema = new mongoose.Schema({
     firstName: {
@@ -28,14 +30,15 @@ let userSchema = new mongoose.Schema({
         type: String,
         default: 'user',
     },
-    cart: {
+    cart: [{
+        product: {type: mongoose.Types.ObjectId, ref: 'Product'},
+        quantity: Number,
+        color: String,
+    }],
+    address: {
         type: Array,
         default: []
     },
-    address: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'address'
-    }],
     wishlist: [{
         type: mongoose.Types.ObjectId,
         ref: 'Product'
@@ -69,8 +72,13 @@ userSchema.pre('save', async function (next) {
 
 userSchema.methods = {
     isCorrectPassword: async function (password) {
-        console.log(password, this.password);
         return await bcrypt.compare(password, this.password);
+    },
+    createPasswordChangedToken: function() {
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        this.passwordResetExpires = Date.now() + 10*60*1000;
+        return resetToken;
     }
 }
 
