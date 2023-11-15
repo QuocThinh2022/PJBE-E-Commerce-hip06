@@ -1,7 +1,7 @@
 const express = require('express');
-const initRoutes = require('./routes/index.route');
+const initRoutes = require(`${__dirname}/routes/index.route`);
 require('dotenv').config();
-const dbConnect = require('./config/dbconnect');
+const dbConnect = require(`${__dirname}/config/dbconnect`);
 const cookieParser = require('cookie-parser');
 
 const app = express();
