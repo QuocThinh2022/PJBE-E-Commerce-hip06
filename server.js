@@ -13,7 +13,7 @@ dbConnect();
 initRoutes(app);
 
 app.use('/', (req, res) => {
-    res.send('server onnnn!');
+    res.send('Server onnnn!');
 });
 
 app.listen(port, () => {
