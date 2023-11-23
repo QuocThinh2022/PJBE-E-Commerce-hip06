@@ -1,4 +1,3 @@
-const { response } = require('express');
 const Product = require('../models/product');
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
@@ -128,6 +127,22 @@ const ratings = asyncHandler(async (req, res) => {
     })
 })
 
+const uploadThumbnailProduct = asyncHandler(async (req, res) => {
+    const {pid} = req.params;
+    if (!req.file) throw new Error('Missing inputs');
+    const response = await Product.findByIdAndUpdate(pid, {thumbnail: req.file.path}, {new: true});
+    console.log(response);
+    // if (response.images.length == 0) {
+    //     response.images.push(req.file.path);
+    //     response.save();
+    // }
+
+    return res.status(200).json({
+        status: response ? true:false,
+        uploadThumbnailProduct: response ? response : "Cannot upload thumbnail product"
+    })
+})
+
 const uploadImagesProduct = asyncHandler(async (req, res) => {
     const {pid} = req.params;
     if (!req.files) throw new Error('Missing inputs');
@@ -148,5 +163,6 @@ module.exports = {
     undoDeleteProduct,
     ratings,
     uploadImagesProduct,
+    uploadThumbnailProduct
 
 }

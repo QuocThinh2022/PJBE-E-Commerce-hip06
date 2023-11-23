@@ -26,7 +26,7 @@ let productSchema = new mongoose.Schema({
     },
     category: {
         type: mongoose.Types.ObjectId,
-        ref: 'Category'
+        ref: 'ProductCategory'
     },
     quantity: {
         type: Number,
@@ -35,6 +35,10 @@ let productSchema = new mongoose.Schema({
     sold: {
         type: Number,
         default: 0
+    },
+    thumbnail: {
+        type: String,
+        default: "https://res.cloudinary.com/deqclwsve/image/upload/v1700020857/cld-sample-2.jpg"
     },
     images: {
         type: Array,

@@ -6,6 +6,10 @@ let productCategorySchema = new mongoose.Schema({
         required: true,
         unique: true,
         index: true,
+    },
+    thumbnail: {
+        type: String,
+        default: ""
     }
 },{
     timestamps: true

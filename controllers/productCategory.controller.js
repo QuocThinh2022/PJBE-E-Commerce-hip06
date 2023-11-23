@@ -10,10 +10,10 @@ const createProductCategory = asyncHandler(async (req, res) => {
 })
 
 const getProductCategories = asyncHandler(async (req, res) => {
-    const response = await ProductCategory.find().select('title _id');
+    const response = await ProductCategory.find().select('title _id thumbnail');
     return res.json({
         success: response ? true:false,
-        getProductCategories: response ? response: 'Cannot get product-categories'
+        productCategories: response ? response: 'Cannot get product-categories'
     })
 })
 
@@ -35,9 +35,21 @@ const deleteProductCategory = asyncHandler(async (req, res) => {
     })
 })
 
+const uploadImagesProductCategory = asyncHandler(async (req, res) => {
+    const {pcid} = req.params;
+    if (!req.file) throw new Error('Missing inputs');
+    const response = await ProductCategory.findByIdAndUpdate(pcid, {thumbnail: req.file.path}, {new: true});
+
+    return res.status(200).json({
+        status: response ? true:false,
+        uploadImagesProduct: response ? response : 'Cannot upload images product'
+    })
+})
+
 module.exports = {
     createProductCategory,
     getProductCategories,
     updateProductCategory,
     deleteProductCategory,
+    uploadImagesProductCategory
 }
