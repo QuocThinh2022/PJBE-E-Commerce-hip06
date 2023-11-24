@@ -47,7 +47,7 @@ const login = asyncHandler(async (req, res) => {
         res.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge: 7*24*60*60*1000});
         return res.status(200).json({
             sucess: true,
-            accessToken,
+            token: accessToken,
             userData
         })
     } else {
