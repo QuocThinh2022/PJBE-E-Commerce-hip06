@@ -31,7 +31,9 @@ const getProducts = asyncHandler(async (req, res) => {
     let formatedQueries = JSON.parse(queryString);
 
     // filtering
-    if (queries?.title) formatedQueries.title = {$regex: queries.title, $options: 'i'}; 
+    if (queries?.title) {
+        formatedQueries.title = {$regex: queries.title, $options: 'i'}; 
+    }
     let queryCommand = Product.find(formatedQueries);
 
     // sorting
@@ -131,11 +133,10 @@ const uploadThumbnailProduct = asyncHandler(async (req, res) => {
     const {pid} = req.params;
     if (!req.file) throw new Error('Missing inputs');
     const response = await Product.findByIdAndUpdate(pid, {thumbnail: req.file.path}, {new: true});
-    console.log(response);
-    // if (response.images.length == 0) {
-    //     response.images.push(req.file.path);
-    //     response.save();
-    // }
+    if (response.images.length == 0) {
+        response.images.push(req.file.path);
+        response.save();
+    }
 
     return res.status(200).json({
         status: response ? true:false,
